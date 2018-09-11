@@ -85,7 +85,7 @@ class SubjectExplorer:
         for i in np.arange(tfidf.shape[0]):
             for j in np.arange(tfidf.shape[0]):
                 if((i!=j) and (cos_similarity_matrix[i,j]>0)):
-                    importance_weights_vec = [tfidf[i,k]*tfidf[j,k] for k in np.arange(tfidf.shape[1])]
+                    importance_weights_vec = [dense_tfidf[i,k]*dense_tfidf[j,k] for k in np.arange(tfidf.shape[1])]
                     topic_indices = np.array(importance_weights_vec)>0
                     importance_weights = np.array(importance_weights_vec)[topic_indices]
                     tmp = np.array(features)[topic_indices]
