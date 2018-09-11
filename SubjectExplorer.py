@@ -23,6 +23,9 @@ import scipy.sparse as ssp
 from sklearn.feature_extraction.text import TfidfVectorizer
 from typing import List
 
+from collections import Counter
+from nltk.corpus import stopwords
+
 # Hyper settings...
 LANGUAGE = "english"
 SENTENCES_COUNT = 20
@@ -82,7 +85,7 @@ class SubjectExplorer:
         for i in np.arange(tfidf.shape[0]):
             for j in np.arange(tfidf.shape[0]):
                 if((i!=j) and (cos_similarity_matrix[i,j]>0)):
-                    importance_weights_vec = [dense_tfidf[i,k]*dense_tfidf[j,k] for k in np.arange(tfidf.shape[1])]
+                    importance_weights_vec = [tfidf[i,k]*tfidf[j,k] for k in np.arange(tfidf.shape[1])]
                     topic_indices = np.array(importance_weights_vec)>0
                     importance_weights = np.array(importance_weights_vec)[topic_indices]
                     tmp = np.array(features)[topic_indices]
@@ -118,26 +121,66 @@ class SubjectExplorer:
         
         return sorted_importance_weights
 
+    def ngrams(self,text, n=2):
+        return zip(*[text[i:] for i in range(n)])
+
+    def strip_non_ascii(self,string):
+        stripped = (c for c in string if 0 < ord(c) < 127)
+        return ''.join(stripped)
+
+    def clean_sentence(self,text):
+        text = self.strip_non_ascii(text)
+
+        stopWords = set(stopwords.words('english'))
+        stopWords.add('&')
+        stopWords.add('&amp')
+        stopWords.add('rt')
+        def is_banned(word):
+            if word.startswith('http') or \
+                word.startswith('@') or \
+                word.startswith('#') or \
+                word in stopWords:
+                    return True
+            return False
+
+        # Replace named entities with First_Second word format
+        text = text.replace('"','')
+        text = text.replace("'","")
+        text = ' '.join([''.join([c for c in x.lower()]) for x in text.split() if not is_banned(x)])
+
+        text = str(text)
+
+        return text
+
 if __name__ == "__main__":
     url = "http://newknowledge.com"
     print("DEBUG::main::starting sumy url summarization test...")
     TopicExtractor = SubjectExplorer()
     sentences = TopicExtractor.ExtractivelySummarizeCorpus(url,True)
+    print("These are the summary sentences:")
+    print(sentences)
     extractedTopics = TopicExtractor.ExtractTopics(sentences)
-    print("These are the extracted topics, from url: (sorted, importance weights included)")
+    print("These are the extracted topics, from the summary sentences: (sorted, importance weights included)")
     print(extractedTopics)
-    filename = "data/6_20_17_32_bp_content.txt"
-    #filename = "data/pro_gun_text.csv"
+    #filename = "data/6_20_17_32_bp_content.txt"
+    filename = "data/pro_gun_text.csv"
     print("DEBUG::main::starting sumy file summarization test...")
     TopicExtractor = SubjectExplorer()
     df = pd.read_csv(filename, dtype='str', header=None)
-    # print(df)
-    df_list = df.ix[0:MAX_N_ROWS,0].tolist()
-    df_list = [sentence + '.' for sentence in df_list]
-    # print(df_list)
+    #df_full_list = df.tolist()
+    #df_full_list = [sentence + '.' for sentence in df_full_list]
+    df_list = df.ix[np.random.choice(df.shape[0],MAX_N_ROWS,replace=False),1].tolist()
+    df_list = [TopicExtractor.clean_sentence(str(sentence)) + '.' for sentence in df_list]
+    print("DEBUG::first 100 cleaned tweets:")
+    print(df_list[:100])
     (pd.DataFrame(df_list)).to_csv("data/truncated_frame.csv",index=False)
     sentences = TopicExtractor.ExtractivelySummarizeCorpus("data/truncated_frame.csv",False)
-    #sentences = df_list
+    print("These are the summary sentences:")
+    print(sentences)
     extractedTopics = TopicExtractor.ExtractTopics(sentences)
-    print("These are the extracted topics, from file: (sorted, importance weights included)")
+    print("These are the extracted topics, from the summary sentences: (sorted, importance weights included)")
     print(extractedTopics)
+    '''sentences = df_list # extract topics from the whole corpus
+    extractedTopics = TopicExtractor.ExtractTopics(sentences)
+    print("These are the extracted topics, from the whole corpus: (sorted, importance weights included)")
+    print(extractedTopics)'''
