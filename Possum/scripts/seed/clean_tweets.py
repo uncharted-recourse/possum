@@ -15,7 +15,7 @@ def clean_sentence(text):
     text = strip_non_ascii(text)
 
     # stopwords = ['&','&amp;']
-    #stopWords += [l.strip() for l in open('stops.txt').readlines()]
+    # stopWords += [l.strip() for l in open('stops.txt').readlines()]
     stopWords = set(stopwords.words('english'))
     stopWords.add('&')
     stopWords.add('&amp')
@@ -39,8 +39,8 @@ def clean_sentence(text):
 
 if __name__ == "__main__":
     filename = "data/pro_gun_text.csv"
-    print("DEBUG::main::starting tweet clean and ngram extract test...")
-    df = pd.read_csv(filename, dtype='str', header=None)
+    print("DEBUG::starting tweet clean and ngram extract test...")
+    df = pd.read_csv(filename, dtype=str, header=None)
     df_cleaned_list = df.values[:,1].tolist()
     df_cleaned_list = [clean_sentence(str(sentence)) + '.' for sentence in df_cleaned_list]
     print("DEBUG::corpus before cleaning (pandas frame):")

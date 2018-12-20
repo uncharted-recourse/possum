@@ -1,8 +1,16 @@
-# possum
-possum - Post Summarization 
+## Possum
+Possum - Post Summarization 
 
-Extractive social media post summarization.
+Extractive corpus-level social media post summarization.
 
-Input can be .csv corpus or webpage url.
+Input can be a .csv corpus derived from some social media platform or webpage url.
 
-Utilizes LexRank, LSA, TextRank, etc. (specifically implementation in `sumy`)
+Able to utilize LexRank, LSA, TextRank, etc - other similar algorithms. (specifically their implementation in `sumy`)
+
+## Installation
+
+TBD
+
+## Examples
+
+TBD

@@ -1,4 +1,0 @@
-sumy
-scipy
-numpy
-sklearn
