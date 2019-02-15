@@ -35,6 +35,7 @@ from typing import List
 from collections import Counter
 from nltk.corpus import stopwords
 import nltk
+import sys
 
 # Hyper settings...
 LANGUAGE = "english" # english is the default language
@@ -191,10 +192,14 @@ class Possum:
         return text
 
 if __name__ == "__main__":
+    nltk_location = sys.argv[1]
     # A - webpage corpus example
     url = "http://newknowledge.com"
     print("DEBUG::main::starting sumy url summarization test...")
-    TopicExtractor = Possum(nltk_directory="./d26d6663dacb42d747ef210ec2f088e57454fd33bf42a612c14c1a393a7808bc")
+    if nltk_location:
+        TopicExtractor = Possum(nltk_directory=nltk_location)
+    else:
+        TopicExtractor = Possum()
     sentences = TopicExtractor.ExtractivelySummarizeCorpus(corpus_path=url,HTML=True,sentence_count=30)
     print("These are the summary sentences:")
     print(sentences)
@@ -205,7 +210,11 @@ if __name__ == "__main__":
     # B - text file corpus example
     filename = "data/NASA_TestData.txt"
     print("\n\n\nDEBUG::main::starting sumy text file summarization test...")
-    TopicExtractor = Possum(method='lsa', nltk_directory="./d26d6663dacb42d747ef210ec2f088e57454fd33bf42a612c14c1a393a7808bc") # example non-default method specification
+    # example non-default method specification
+    if nltk_location:
+        TopicExtractor = Possum(method='lsa',nltk_directory=nltk_location)
+    else:
+        TopicExtractor = Possum(method='lsa')
     df = pd.read_csv(filename, dtype=str, header=None)
     #MAX_N_ROWS = 500
     #df_list = df.ix[np.random.choice(df.shape[0],MAX_N_ROWS,replace=False),1].tolist() # subsample tweets
