@@ -194,7 +194,7 @@ if __name__ == "__main__":
     # A - webpage corpus example
     url = "http://newknowledge.com"
     print("DEBUG::main::starting sumy url summarization test...")
-    TopicExtractor = Possum(nltk_directory="d26d6663dacb42d747ef210ec2f088e57454fd33bf42a612c14c1a393a7808bc")
+    TopicExtractor = Possum(nltk_directory="./d26d6663dacb42d747ef210ec2f088e57454fd33bf42a612c14c1a393a7808bc")
     sentences = TopicExtractor.ExtractivelySummarizeCorpus(corpus_path=url,HTML=True,sentence_count=30)
     print("These are the summary sentences:")
     print(sentences)
@@ -207,11 +207,11 @@ if __name__ == "__main__":
     # filename = "scripts/data/6_20_17_32_bp_content.txt"
     filename = "data/NASA_TestData.txt"
     print("\n\n\nDEBUG::main::starting sumy .csv file summarization test...")
-    TopicExtractor = Possum(method='lsa', nltk_directory="d26d6663dacb42d747ef210ec2f088e57454fd33bf42a612c14c1a393a7808bc") # example non-default method specification
+    TopicExtractor = Possum(method='lsa', nltk_directory="./d26d6663dacb42d747ef210ec2f088e57454fd33bf42a612c14c1a393a7808bc") # example non-default method specification
     df = pd.read_csv(filename, dtype=str, header=None)
     #MAX_N_ROWS = 500
     #df_list = df.ix[np.random.choice(df.shape[0],MAX_N_ROWS,replace=False),1].tolist() # subsample tweets
-    df_list = df.tolist()
+    df_list = df.values.tolist()
     df_list = [TopicExtractor.clean_sentence(str(sentence)) + '.' for sentence in df_list] # clean tweets
     (pd.DataFrame(df_list)).to_csv("scripts/data/truncated_frame.csv",index=False) # write cleaned tweets to file
     # 2 - LOOK AT THE TOP 30 BIGRAMS
