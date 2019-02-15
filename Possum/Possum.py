@@ -202,18 +202,15 @@ if __name__ == "__main__":
     print("These are the extracted topics, from the summary sentences: (sorted, importance weights included)")
     print(extractedTopics)
     
-    # B - .csv file corpus example
-    # 1 - FIRST CLEAN TWEETS AND SUBSAMPLE FOR LOCAL MEMORY LIMITATION REASONS
-    # filename = "scripts/data/6_20_17_32_bp_content.txt"
+    # B - text file corpus example
     filename = "data/NASA_TestData.txt"
-    print("\n\n\nDEBUG::main::starting sumy .csv file summarization test...")
+    print("\n\n\nDEBUG::main::starting sumy text file summarization test...")
     TopicExtractor = Possum(method='lsa', nltk_directory="./d26d6663dacb42d747ef210ec2f088e57454fd33bf42a612c14c1a393a7808bc") # example non-default method specification
     df = pd.read_csv(filename, dtype=str, header=None)
     #MAX_N_ROWS = 500
     #df_list = df.ix[np.random.choice(df.shape[0],MAX_N_ROWS,replace=False),1].tolist() # subsample tweets
     df_list = df.values.tolist()
     df_list = [TopicExtractor.clean_sentence(str(sentence)) + '.' for sentence in df_list] # clean tweets
-    (pd.DataFrame(df_list)).to_csv("scripts/data/truncated_frame.csv",index=False) # write cleaned tweets to file
     # 2 - LOOK AT THE TOP 30 BIGRAMS
     ngram_counts = Counter(TopicExtractor.ngrams(text="".join(df_list).split(), n=2))
     print("The 30 most common word bigrams are:")
