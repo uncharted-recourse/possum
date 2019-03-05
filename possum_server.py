@@ -5,6 +5,7 @@
 # 
 
 import nltk.data
+import nltk
 from random import shuffle
 from json import JSONEncoder
 from flask import Flask, request
@@ -46,6 +47,12 @@ DEBUG = True # boolean to specify whether to print DEBUG information
 #-----
 class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
 
+    def __init__(self):
+        try:
+            nltk.download('punkt')
+        except Exception:
+            logger.exception("Problem downloading NTLK stopwords.")
+
     # Main extrraction function
     def Extract(self, request, context):
 
@@ -86,7 +93,7 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
             num_sentences = DEFAULT_NUM_SENTENCES
 
         # Cap the number of the sentences.
-        num_sentences = np.min(num_sentences, MAX_NUM_SENTENCES)
+        num_sentences = min(num_sentences, MAX_NUM_SENTENCES)
 
         str_counter = Counter(input_doc)
         num_periods = str_counter["."]
