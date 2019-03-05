@@ -21,8 +21,8 @@ Start the server:
 In a separate terminal session, run the client example:
 ```python3.6 possum_client.py```
 
-* Input messages are instances of the `Message` class: 
-* Summarization results are included in the `result` as an instance of the `Extraction` class:
+* Input messages are instances of the `Message` class.
+* Summarization results are included in the `result` as an instance of the `Extraction` class. See https://github.com/uncharted-recourse/grapevine/blob/master/grapevine/grapevine.proto. 
 
 Sample input:
 ```I understand that you have been in contact with Jane Doe of our office.  She will be out of the office for the rest of the week and has asked that  I contact you regarding the proposed contract for differences between  our companies. She advises that she mentioned to you that Powerex  and Enron have recently completed two Contracts for Differences  in Alberta.  Enron has generated the confirms and attached Annex  A General Terms and Conditions.  We have since prepared a standard form  Contract for Differences which we would propose to use for future transactions. This document is more specifically designed for doing contract for differences  in Alberta.  Please review this document and provide us with your comments```
