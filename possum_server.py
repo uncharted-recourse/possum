@@ -49,11 +49,12 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
 
     def __init__(self):
         try:
-            nltk.download('punkt')
+            nltk.data.load('tokenizers/punkt/english.pickle')
         except Exception:
-            logger.exception("Problem downloading NTLK stopwords.")
+            logger.exception("Downloading NLTK tokenizers.")
+            nltk.download('punkt')
 
-    # Main extrraction function
+    # Main extraction function
     def Extract(self, request, context):
 
         # init Extraction result object
