@@ -1,0 +1,18 @@
+setuptools
+ipykernel
+jupyter
+matplotlib
+numpy
+scipy>=0.19.0
+sklearn
+pandas>=0.19.2
+dill
+kafka
+flask
+requests
+nltk
+grpcio-tools
+flask
+click # must install manually - `pip3 install click`, won't work through requirements.txt file 
+sumy
+git+https://github.com/NewKnowledge/possum@120bb62ac9e4b726bc8ca8d934956ca9e400302f
