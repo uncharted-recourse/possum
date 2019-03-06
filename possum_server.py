@@ -67,8 +67,7 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
 
         # Get text from input message.
         input_doc = request.text
-        print("DEBUG:")
-        print(input_doc)
+        logger.debug("Input doc: " + input_doc)
 
         # Exception cases.
         if (len(input_doc.strip()) == 0) or (input_doc is None):
@@ -77,7 +76,7 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
         # Check the language of the English. Use English 'en' as the default and fallback option.
         language_abbrev = request.language
         if language_abbrev not in LANGUAGE_ABBREVIATIONS:
-            print("Unknown or unsupported language abbreviation. Using en = English.")
+            logger.warning("Unknown or unsupported language abbreviation. Using en = English.")
             language_abbrev = "en"
 
         if language_abbrev in LANGUAGE_MAPPING:
@@ -90,7 +89,7 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
         try: 
             num_sentences = int(request.raw)
         except:
-            print("Could not parse input.raw into an integer.")
+            logger.warning("Could not parse input.raw into an integer.")
             num_sentences = DEFAULT_NUM_SENTENCES
 
         # Cap the number of the sentences.
@@ -102,14 +101,10 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
         length_of_doc = len(input_doc)
 
         if num_periods < num_sentences or num_spaces < 2 or length_of_doc <= 3:
-            print("Detected short input document. Setting num_sentences to 1.")
+            logger.warning("Detected short input document. Setting num_sentences to 1.")
             num_sentences = 1
 
         start_time = time.time()
-        
-        if(DEBUG):
-            print("DEBUG::input document:")
-            print(input_doc)
 
         TopicExtractor = Possum(nltk_directory=NLTK_LOCATION)
 
@@ -124,10 +119,11 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
             logger.exception("Problem extracting summary sentences.")
             raise Exception
         
-        print(sentences)
+
 
         elapsed_time = time.time()-start_time
-        print("Total time for summarization is : %.2f sec" % elapsed_time)
+        if (DEBUG):
+            logger.info("Total time for summarization is : %.2f sec" % elapsed_time)
         
         # Include the summary sentences in the result object.
         try:
@@ -156,15 +152,15 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read('config.ini')
     nltk_directory = config['DEFAULT']['nltk_directory']
-    print("nltk_directory " + nltk_directory)
+    logger.info("nltk_directory " + nltk_directory)
     global NLTK_LOCATION
     NLTK_LOCATION = nltk_directory
     algorithm = config['DEFAULT']['algorithm']
-    print("algorithm " + algorithm)
+    logger.info("algorithm " + algorithm)
     global ALGORITHM
     ALGORITHM = algorithm
     port_config = config['DEFAULT']['port_config']
-    print("using port " + port_config + " ...")
+    logger.info("using port " + port_config + " ...")
     global GRPC_PORT
     GRPC_PORT = port_config
     

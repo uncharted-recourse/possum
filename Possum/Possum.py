@@ -36,6 +36,10 @@ from collections import Counter
 from nltk.corpus import stopwords
 import nltk
 import sys
+import logging
+
+logger = logging.getLogger('nk_possum_server')
+logger.setLevel(logging.DEBUG)
 
 # Hyper settings...
 LANGUAGE = "english" # english is the default language
@@ -46,7 +50,7 @@ class Possum:
         # Set the location of the nltk data directory for tokenizers, etc.
         if nltk_directory:
             nltk.data.path.append(nltk_directory)
-            print(nltk.data.path)
+            logger.info(nltk.data.path)
         try:
             self.stemmer = Stemmer(LANGUAGE)
         except Exception:
@@ -55,22 +59,22 @@ class Possum:
         self.summarizer = Summarizer(self.stemmer) # default
         if method:
             if(method=='luhn'):
-                print("Using the Luhn summarizer!")
+                logger.info("Using the Luhn summarizer!")
                 self.summarizer = LuhnSummarizer(self.stemmer)
             elif(method=='edmundson'):
-                print("Using the Edmundson summarizer!")
+                logger.info("Using the Edmundson summarizer!")
                 self.summarizer = EdmundsonSummarizer(self.stemmer)  
             elif(method=='lsa'):
-                print("Using the LSA summarizer!")
+                logger.info("Using the LSA summarizer!")
                 self.summarizer = LsaSummarizer(self.stemmer)
             elif(method=='text_rank'):
-                print("Using the Text Rank summarizer!")
+                logger.info("Using the Text Rank summarizer!")
                 self.summarizer = TextRankSummarizer(self.stemmer)
             elif(method=='sum_basic'):
-                print("Using the Sum Basic summarizer!")
+                logger.info("Using the Sum Basic summarizer!")
                 self.summarizer = SumBasicSummarizer(self.stemmer)
             elif(method=='kl'):
-                print("Using the KL summarizer!")
+                logger.info("Using the KL summarizer!")
                 self.summarizer = KLSummarizer(self.stemmer)
         
         self.summarizer.stop_words = get_stop_words(LANGUAGE)
@@ -86,11 +90,11 @@ class Possum:
         sentences = self.summarizer(self.parser.document, sentence_count)
         
         if(DEBUG):
-            # print("DEBUG::ExtractivelySummarizeCorpus::these are all the parser.document.sentences")
-            # print(self.parser.document.sentences)
-            print("DEBUG::ExtractivelySummarizeCorpus::top n=%d sentences:"%sentence_count)
+            # logger.info("DEBUG::ExtractivelySummarizeCorpus::these are all the parser.document.sentences")
+            # logger.info(self.parser.document.sentences)
+            logger.info("DEBUG::ExtractivelySummarizeCorpus::top n=%d sentences:"%sentence_count)
             for sentence in sentences:
-                print(str(sentence))
+                logger.info(str(sentence))
         sentences = [str(sentence) for sentence in sentences]
         
         return sentences
@@ -103,19 +107,19 @@ class Possum:
         features = TfidfVec.get_feature_names()
 
         if(DEBUG):
-            print("DEBUG::ExtractTopics::all features (words)")
-            print(features)
+            logger.info("DEBUG::ExtractTopics::all features (words)")
+            logger.info(features)
 
         cos_similarity_matrix = (tfidf * tfidf.T).toarray()
         dense_tfidf = tfidf.todense()
 
         if(DEBUG):
-            print("DEBUG::ExtractTopics::tfidf matrix dimension:")
-            print(tfidf.shape)
-            print("DEBUG::ExtractTopics::dense tfidf matrix:")
-            print(dense_tfidf)
-            print("DEBUG::ExtractTopics::cos_similarity_matrix:")
-            print(cos_similarity_matrix)
+            logger.info("DEBUG::ExtractTopics::tfidf matrix dimension:")
+            logger.info(tfidf.shape)
+            logger.info("DEBUG::ExtractTopics::dense tfidf matrix:")
+            logger.info(dense_tfidf)
+            logger.info("DEBUG::ExtractTopics::cos_similarity_matrix:")
+            logger.info(cos_similarity_matrix)
 
         topics = []
         all_importance_weights = np.empty(0)
@@ -129,20 +133,20 @@ class Possum:
                     topics.extend(list(tmp))
                     all_importance_weights = np.append(all_importance_weights,importance_weights)
                     if(DEBUG):
-                        print(importance_weights)
-                        print("DEBUG::ExtractTopics::extracted topics:")
-                        print(tmp)
-                        print("DEBUG::ExtractTopics::extracted topic weights:")
-                        print(importance_weights)
+                        logger.info(importance_weights)
+                        logger.info("DEBUG::ExtractTopics::extracted topics:")
+                        logger.info(tmp)
+                        logger.info("DEBUG::ExtractTopics::extracted topic weights:")
+                        logger.info(importance_weights)
 
         unique_topics = list(set(topics))   
         if(DEBUG):
-            print("DEBUG::ExtractTopics::concatenated extracted topics:")
-            print(topics)
-            print("DEBUG::ExtractTopics::concatenated extracted topic weights:")
-            print(all_importance_weights)
-            print("DEBUG::ExtractTopics::unique extracted topics:")
-            print(unique_topics)
+            logger.info("DEBUG::ExtractTopics::concatenated extracted topics:")
+            logger.info(topics)
+            logger.info("DEBUG::ExtractTopics::concatenated extracted topic weights:")
+            logger.info(all_importance_weights)
+            logger.info("DEBUG::ExtractTopics::unique extracted topics:")
+            logger.info(unique_topics)
 
         importance_weights = {}
         for topic in unique_topics:
@@ -159,7 +163,7 @@ class Possum:
         return sorted_importance_weights
 
     def ngrams(self,text, n=2):
-        # print(text)
+        # logger.info(text)
         # text = str(text)
         return zip(*[text[i:] for i in range(n)])
 
@@ -195,21 +199,21 @@ if __name__ == "__main__":
     nltk_location = sys.argv[1]
     # A - webpage corpus example
     url = "http://newknowledge.com"
-    print("DEBUG::main::starting sumy url summarization test...")
+    logger.info("DEBUG::main::starting sumy url summarization test...")
     if nltk_location:
         TopicExtractor = Possum(nltk_directory=nltk_location)
     else:
         TopicExtractor = Possum()
     sentences = TopicExtractor.ExtractivelySummarizeCorpus(corpus_path=url,HTML=True,sentence_count=30)
-    print("These are the summary sentences:")
-    print(sentences)
+    logger.info("These are the summary sentences:")
+    logger.info(sentences)
     extractedTopics = TopicExtractor.ExtractTopics(sentences)
-    print("These are the extracted topics, from the summary sentences: (sorted, importance weights included)")
-    print(extractedTopics)
+    logger.info("These are the extracted topics, from the summary sentences: (sorted, importance weights included)")
+    logger.info(extractedTopics)
     
     # B - text file corpus example
     filename = "data/NASA_TestData.txt"
-    print("\n\n\nDEBUG::main::starting sumy text file summarization test...")
+    logger.info("\n\n\nDEBUG::main::starting sumy text file summarization test...")
     # example non-default method specification
     if nltk_location:
         TopicExtractor = Possum(method='lsa',nltk_directory=nltk_location)
@@ -222,12 +226,12 @@ if __name__ == "__main__":
     df_list = [TopicExtractor.clean_sentence(str(sentence)) + '.' for sentence in df_list] # clean tweets
     # 2 - LOOK AT THE TOP 30 BIGRAMS
     ngram_counts = Counter(TopicExtractor.ngrams(text="".join(df_list).split(), n=2))
-    print("The 30 most common word bigrams are:")
-    print(ngram_counts.most_common(30))
+    logger.info("The 30 most common word bigrams are:")
+    logger.info(ngram_counts.most_common(30))
     # 3 - PERFORM SUMMARIZATION/TOPIC EXTRACTION
     sentences = TopicExtractor.ExtractivelySummarizeCorpus(corpus_path="data/NASA_TestData.txt",HTML=False,sentence_count=30)
-    print("These are the summary sentences:")
-    print(sentences)
+    logger.info("These are the summary sentences:")
+    logger.info(sentences)
     extractedTopics = TopicExtractor.ExtractTopics(sentences)
-    print("These are the topics extracted from the summary sentences: (sorted, importance weights included)")
-    print(extractedTopics)
+    logger.info("These are the topics extracted from the summary sentences: (sorted, importance weights included)")
+    logger.info(extractedTopics)
