@@ -33,10 +33,10 @@ The gRPC interface consists of the following components:
 *) `possum_client.py` which is an example script demonstrating how the main gRPC server can be accessed to classify emails 
  
 To build corresponding docker image:
-`sudo docker build -t nk-possum-text-summarization-binary: .`
+`sudo docker build -t docker.ased.uncharted.software/nk-possum-text-summarization-binary:latest .`
 
 To run docker image, simply do
-`sudo docker run -it -p 50052:50052 nk-email-classifier:latest`
+`sudo docker run -it -p 50052:50052 docker.ased.uncharted.software/nk-email-classifier:latest`
 
 Finally, edit `possum_client.py` with example email of interest for classification, and then run that script as
 `python3 possum_client.py`
