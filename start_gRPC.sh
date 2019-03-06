@@ -1,2 +1,2 @@
 #!/bin/sh
-python3 possum_server.py œ
+python3 possum_server.py 

@@ -1,6 +1,6 @@
-#FROM nvidia/cuda:8.0-cudnn5-devel-ubuntu16.04
+FROM nvidia/cuda:8.0-cudnn5-devel-ubuntu16.04
 
-#MAINTAINER Craig Citro <craigcitro@google.com>
+MAINTAINER Craig Citro <craigcitro@google.com>
 
 # Pick up some TF dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -32,7 +32,7 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     rm get-pip.py
 
 # Set up our notebook config.
-#COPY . ./clusterfiles
+COPY . ./clusterfiles
 
 RUN pip3 --no-cache-dir install -r ./clusterfiles/requirements.txt \
         && \
@@ -65,18 +65,15 @@ RUN ls /opt #find / -name "libmsodbcsql*"
 
 
 # For CUDA profiling, TensorFlow requires CUPTI.
-#ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH
 
-#WORKDIR ./clusterfiles
+WORKDIR ./clusterfiles
 
 ENV LC_ALL=C.UTF-8 \
     LANG=C.UTF-8
 
 RUN echo $LC_ALL &&\
     echo $LANG
-
-RUN chmod +x start_flask.sh && \
-    sync
 
 RUN chmod +x start_gRPC.sh && \
     sync
