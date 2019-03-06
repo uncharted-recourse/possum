@@ -75,14 +75,9 @@ ENV LC_ALL=C.UTF-8 \
 RUN echo $LC_ALL &&\
     echo $LANG
 
-RUN chmod +x start_flask.sh && \
-    sync
-
 RUN chmod +x start_gRPC.sh && \
     sync
 
 # this is the gRPC server command
 CMD ./start_gRPC.sh
 
-# this is the REST server command
-#CMD ./start_flask.sh
