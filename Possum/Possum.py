@@ -46,7 +46,10 @@ LANGUAGE = "english" # english is the default language
 DEBUG = False # don't print debug info by default
 
 class Possum:
-    def __init__(self,method=None, nltk_directory=None):
+    def __init__(self,method=None, nltk_directory=None, language=None):
+        if (language):
+            logger.info("Setting language to " + language)
+            LANGUAGE = language
         # Set the location of the nltk data directory for tokenizers, etc.
         if nltk_directory:
             nltk.data.path.append(nltk_directory)
@@ -54,6 +57,7 @@ class Possum:
         try:
             self.stemmer = Stemmer(LANGUAGE)
         except Exception:
+            logger.exception("Error loading nltk stemmer")
             raise Exception("Error loading nltk stemmer")
             
         self.summarizer = Summarizer(self.stemmer) # default

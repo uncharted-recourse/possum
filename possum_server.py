@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #
 # GRPC Server for NK Possum text summarization primitive
 # 
@@ -106,7 +107,7 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
 
         start_time = time.time()
 
-        TopicExtractor = Possum(nltk_directory=NLTK_LOCATION)
+        TopicExtractor = Possum(nltk_directory=NLTK_LOCATION, language = language, method = ALGORITHM)
 
         # Write the inputs to a temporary file to be processed.
         process_id = os.getpid()
