@@ -80,7 +80,10 @@ class Possum:
             elif(method=='kl'):
                 logger.info("Using the KL summarizer!")
                 self.summarizer = KLSummarizer(self.stemmer)
-        
+            elif(method=='lex_rank'):
+                logger.info("Using the LexRank summarizer!")
+                self.summarizer = LexRankSummarizer(self.stemmer)
+        #print(method)
         self.summarizer.stop_words = get_stop_words(LANGUAGE)
 
     def ExtractivelySummarizeCorpus(self,corpus_path:str,HTML:bool = True,sentence_count:int = 20):
