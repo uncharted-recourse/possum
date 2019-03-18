@@ -19,6 +19,7 @@ import configparser
 import os.path
 import os
 import pandas as pd
+import datetime
 
 import grpc
 import logging
@@ -111,7 +112,8 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
 
         # Write the inputs to a temporary file to be processed.
         process_id = os.getpid()
-        filename = 'temp_' + str(process_id) + '.txt'
+        current_datetime = str(datetime.datetime.now()).replace(" ","_")
+        filename = 'temp_' + str(process_id) + '_' + current_datetime + '.txt'
         print(input_doc,  file=open(filename, 'w'))
         
         try:
@@ -132,6 +134,10 @@ class NKPossumSummarizer(grapevine_pb2_grpc.ExtractorServicer):
         except Exception:
             logger.exception("Problem embedding summary sentences in result object.")
             raise Exception
+
+        # Delete the temporary file.
+        if os.path.exists(filename):
+            os.remove(filename)
 
         return result
 
