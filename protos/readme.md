@@ -11,5 +11,5 @@ From top directory, run:
 
 `python -m grpc_tools.protoc -Iprotos --python_out=. --grpc_python_out=. protos/grapevine.proto`
 
-This will regenerate the `grapevine.pb2.py` and `grapevine.pb2_grpc.py` files in the spam_clf_endpoint directory
+This will regenerate the `grapevine.pb2.py` and `grapevine.pb2_grpc.py` files in the possum directory
 
