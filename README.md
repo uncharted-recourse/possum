@@ -36,9 +36,9 @@ To build corresponding docker image:
 `sudo docker build -t docker.ased.uncharted.software/nk-possum-text-summarization-binary:latest .`
 
 To run docker image, simply do
-`sudo docker run -it -p 50052:50052 docker.ased.uncharted.software/nk-email-classifier:latest`
+`sudo docker run -it -p 50052:50052 docker.ased.uncharted.software/nk-possum-text-summarization-binary:latest`
 
-Finally, edit `possum_client.py` with example email of interest for classification, and then run that script as
+Finally, edit `possum_client.py` with example email of interest for summarization, and then run that script as
 `python3 possum_client.py`
 
 ## Possum Base Primitive
