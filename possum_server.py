@@ -34,8 +34,6 @@ from Possum import Possum
 logger = logging.getLogger('nk_possum_server')
 logger.setLevel(logging.DEBUG)
 
-restapp = Flask(__name__)
-
 # GLOBALS
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 MAX_NUM_SENTENCES = 10
@@ -150,16 +148,12 @@ def serve():
     grapevine_pb2_grpc.add_ExtractorServicer_to_server(NKPossumSummarizer(), server)
     server.add_insecure_port('[::]:' + GRPC_PORT)
     server.start()
-    restapp.run()
     try:
         while True:
             time.sleep(_ONE_DAY_IN_SECONDS)
     except KeyboardInterrupt:
         server.stop(0)
 
-@restapp.route("/health")
-def health():
-    return "HEALTHY"
 
 if __name__ == '__main__':
     config = configparser.ConfigParser()
