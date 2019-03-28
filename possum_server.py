@@ -157,7 +157,7 @@ def serve():
     except KeyboardInterrupt:
         server.stop(0)
 
-@restapp.route("/health")
+@restapp.route("/healthcheck")
 def health():
     return "HEALTHY"
 
