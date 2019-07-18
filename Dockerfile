@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python3 get-pip.py && \
     rm get-pip.py
@@ -30,6 +31,10 @@ RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
 RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
     python3 get-pip.py && \
     rm get-pip.py
+
+
+RUN pip install --upgrade pip
+RUN pip install grpcio grpcio-tools
 
 # Set up our notebook config.
 COPY . ./clusterfiles
@@ -44,8 +49,8 @@ RUN python3 -m nltk.downloader punkt
 
    
 # matplotlib config (used by benchmark)
-RUN mkdir -p /root/.config/matplotlib
-RUN echo "backend : Agg" > /root/.config/matplotlib/matplotlibrc
+#RUN mkdir -p /root/.config/matplotlib
+#RUN echo "backend : Agg" > /root/.config/matplotlib/matplotlibrc
 
 # --- DO NOT EDIT OR DELETE BETWEEN THE LINES --- #
 # These lines will be edited automatically by parameterized_docker_build.sh. #
