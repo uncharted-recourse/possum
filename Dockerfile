@@ -45,7 +45,8 @@ RUN pip3 --no-cache-dir install -r ./clusterfiles/requirements.txt \
         && \
     pip3 install click
 
-RUN python3 -m nltk.downloader punkt
+ENV NLTK_DATA=/usr/local/share/nltk_data
+RUN python3 -m nltk.downloader -d /usr/local/share/nltk_data punkt
 
    
 # matplotlib config (used by benchmark)
